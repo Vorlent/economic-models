@@ -36,7 +36,7 @@ class Simulation:
 
             # use saved_income to pay off debt
             if p.debt > p.max_debt:
-                p.repayment_income = min(p.max_debt - p.debt, p.saved_income)
+                p.repayment_income = min(p.debt - p.max_debt, p.saved_income)
                 p.debt -= p.repayment_income
                 p.saved_income -= p.repayment_income
                 p.wealth_change += p.repayment_income
@@ -62,7 +62,8 @@ class Simulation:
         # dissaving phase
         repayment_demand = 0
         for p in self.people:
-            repayment_demand += max(0, p.savings - p.max_saving)
+            # lenders must accept all payments
+            repayment_demand += p.savings
 
         # repaying phase
         repayment_supply = 0
@@ -101,20 +102,16 @@ class Simulation:
                 p.saved_income = 0
 
         # find equilibrium values
-        repayment_vs_demand = 1
-        repayment_vs_supply = 1
-        if repayment_supply < repayment_demand:
-            repayment_vs_demand = loanable_funds / borrower_demand
-        if repayment_supply > repayment_demand:
-            repayment_vs_supply = borrower_demand / loanable_funds
+        if repayment_demand == 0:
+            repayment_vs_demand = 0
+        else:
+            repayment_vs_demand = repayment_supply / repayment_demand
+
+        print("Equilibrium: repayment_vs_demand {0}".format(repayment_vs_demand))
 
         # clear repayment
         for p in self.people:
-            # allocate repayment according to propensity to repay
-            p.debt -= repayment_vs_supply * p.repayment_income
-
-            # allocate repayment income according to propensity to demand repayment
-            repayment_spending = repayment_vs_demand * max(0, p.savings - p.max_saving)
+            repayment_spending = repayment_vs_demand * p.savings
             p.consumed_income += repayment_spending
             p.savings -= repayment_spending
 
