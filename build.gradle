@@ -10,6 +10,7 @@ apply plugin: 'ru.vyarus.use-python'
 
 python {
     pip 'git+https://github.com/allefeld/pytikz@f878ebd6ce5a647b1076228b48181b147a61abc1#egg=pytikz-0.1.0'
+    pip 'optlang:1.7.0'
 }
 
 
@@ -23,6 +24,10 @@ task runPureConsumption(type: PythonTask) {
 
 task runPureCirculation(type: PythonTask) {
     command = "pure_circulation.py"
+}
+
+task runNeoclassicalSolver(type: PythonTask) {
+    command = "pure_optimization.py"
 }
 
 task publish(type: GradleBuild, dependsOn: ['runMain', 'runPureConsumption', 'runPureCirculation']) {
