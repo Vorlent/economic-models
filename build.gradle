@@ -30,6 +30,10 @@ task runNeoclassicalSolver(type: PythonTask) {
     command = "pure_optimization.py"
 }
 
+task runNeoclassicalSolverLib(type: PythonTask) {
+    command = "pure_optimization_lib.py"
+}
+
 task publish(type: GradleBuild, dependsOn: ['runMain', 'runPureConsumption', 'runPureCirculation']) {
 }
 
